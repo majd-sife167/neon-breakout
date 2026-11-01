@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane styleClass="root-pane" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.breakout.GameController">
+  <top>
+    <HBox alignment="CENTER_LEFT" spacing="28" styleClass="hud">
+      <padding>
+        <Insets bottom="12" left="24" right="24" top="12"/>
+      </padding>
+      <Label fx:id="scoreLabel" styleClass="hud-item" text="SCORE 00000"/>
+      <Label fx:id="levelLabel" styleClass="hud-item" text="LEVEL 1"/>
+      <Label fx:id="livesLabel" styleClass="hud-item" text="LIVES 3"/>
+      <Region HBox.hgrow="ALWAYS"/>
+      <Label fx:id="bestLabel" styleClass="hud-dim" text="BEST 00000"/>
+    </HBox>
+  </top>
+  <center>
+    <StackPane styleClass="board">
+      <Canvas fx:id="canvas" height="600" width="900"/>
+      <!-- design-time mock-up: shows the real board in Scene Builder, hidden at runtime -->
+      <ImageView fx:id="preview" id="preview" fitHeight="600" fitWidth="900" preserveRatio="false" smooth="true">
+        <image>
+          <Image url="@board-preview.png"/>
+        </image>
+      </ImageView>
+      <VBox fx:id="overlay" alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" spacing="14" styleClass="overlay">
+        <Label fx:id="overlayTitle" styleClass="overlay-title" text="NEON BREAKOUT"/>
+        <Label fx:id="overlaySubtitle" styleClass="overlay-subtitle" text="Break every brick. Do not drop the ball."/>
+        <Label fx:id="overlayPrompt" styleClass="overlay-prompt" text="PRESS SPACE TO START"/>
+      </VBox>
+    </StackPane>
+  </center>
+</BorderPane>

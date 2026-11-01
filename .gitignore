@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Java build output
+breakout-javafx/target/
+*.class
+
+# IDE / editor
+.idea/
+.vscode/
+*.iml
+
+# logs
+*.log
