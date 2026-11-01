@@ -1,75 +1,120 @@
 # Neon Breakout
 
-A small Breakout-style arcade game built with plain **HTML, CSS and JavaScript** —
-no frameworks, no build step, no installed dependencies.
+A Breakout game (bounce the ball, clear the bricks) built for a university project.
 
-> **Two versions exist in this folder.** This README covers the **JavaScript** game
-> (root folder). If your assignment requires **JavaFX + Scene Builder**, use
-> [`breakout-javafx/`](breakout-javafx/README.md) instead — same game, Java, 300 lines
-> of code, UI designed in Scene Builder.
+**Two versions are in this repository:**
 
-## Run it
+| Version | Folder | Tech | Code size |
+|---|---|---|---|
+| **JavaFX + Scene Builder** ⭐ | [`breakout-javafx/`](breakout-javafx/) | Java 21, JavaFX 21, FXML, CSS | **300 lines of Java** |
+| Browser version | [`index.html`](index.html) + [`js/`](js/) | HTML, CSS, JavaScript | no build step |
+
+The JavaFX version is the main one: the UI is designed in **Scene Builder**
+(`game.fxml`), the gameplay is Java, and the whole game fits in **exactly 300 lines**.
+
+**Start here → [`breakout-javafx/GUIDE.md`](breakout-javafx/GUIDE.md)** — plain-English
+guide: how to play, what each file does, and how the code works.
+
+---
+
+## JavaFX + Scene Builder version
+
+### Run it
+
+Requires **JDK 21** and **Maven**.
 
 ```bash
-cd "Default Project"
+cd breakout-javafx
+./run.sh
+```
+
+On macOS you can also just double-click **`breakout-javafx/Play Game.command`**
+(the first time, right-click → Open).
+
+> Do not use `java -jar target/…jar` — JavaFX needs its modules on the module path,
+> which `mvn javafx:run` (inside `run.sh`) handles for you.
+
+### Design it
+
+Open `breakout-javafx/src/main/resources/com/example/breakout/game.fxml` in
+**Scene Builder**. Scene Builder edits the layout only — it cannot play the game.
+
+### How it is built
+
+```
+breakout-javafx/
+├── pom.xml                        Maven build (JavaFX 21)
+├── run.sh / Play Game.command     launchers
+└── src/main/
+    ├── java/com/example/breakout/
+    │   ├── App.java               25 lines — window + FXML loading
+    │   └── GameController.java    275 lines — states, physics, collisions, drawing
+    └── resources/com/example/breakout/
+        ├── game.fxml              Scene Builder layout
+        ├── styles.css             colours and fonts
+        └── board-preview.png      board picture shown while designing
+```
+
+- **Loop:** `AnimationTimer`, delta time capped at 33 ms.
+- **Physics:** sub-stepped movement (no tunnelling); circle-vs-rectangle collisions
+  reflected on the smallest overlap axis.
+- **States:** `MENU → READY → PLAYING → PAUSED / LEVEL_CLEAR → GAME_OVER`.
+- **High score:** saved with `Preferences`.
+
+Controls: `←` `→` or `A` `D` (or the mouse) to move · `Space`/`Enter` to start and
+launch · `P`/`Esc` to pause · `R` to restart.
+
+More details: [`breakout-javafx/README.md`](breakout-javafx/README.md) ·
+[`breakout-javafx/SCENE-BUILDER.md`](breakout-javafx/SCENE-BUILDER.md)
+
+---
+
+## Browser version (JavaScript)
+
+No installation, no build step — serve the folder and open it:
+
+```bash
 python3 -m http.server 8000
 ```
 
-Then open **http://localhost:8000** in your browser.
+Then open **http://localhost:8000**.
 
-> Do not double-click `index.html`. Browsers block some features on `file://`
-> URLs, so always use the local server above.
+> Don't open `index.html` directly: browsers restrict some features on `file://` URLs.
 
-## Controls
+Extra features over the JavaFX version: combo scoring, two-hit bricks, and
+synthesised sound effects.
 
-| Key | Action |
+| File | Purpose |
 |---|---|
-| `←` `→` or `A` `D` | Move the paddle |
-| Mouse / trackpad | Steer the paddle directly |
-| `Space` / `Enter` / click | Start game · launch ball |
-| `P` or `Esc` | Pause / resume |
-| `M` | Mute sound |
-| `R` | Restart (on the game-over screen) |
+| `index.html`, `style.css` | page shell and styling |
+| `js/config.js` | tunable constants (sizes, speeds, colours, scoring) |
+| `js/entities.js`, `js/player.js` | ball, bricks, particles, paddle |
+| `js/audio.js` | Web Audio sound synthesis (no audio files) |
+| `js/main.js` | game loop, state machine, collisions, rendering |
+| `js/player.js` | paddle |
 
-## Rules
+Controls: `←` `→` / `A` `D` or mouse · `Space` to start · `P`/`Esc` pause ·
+`M` mute · `R` restart.
 
-- Clear every brick to finish the level. Each level adds a row and a faster ball.
-- You have 3 lives. Dropping the ball costs one.
-- Hitting bricks in a row builds a combo and raises the pitch of the sound.
-- From level 3, some top-row bricks take two hits (they look faded after the first).
-- High score is stored in the browser (`localStorage`).
+---
 
-## Project layout
+## Documentation
 
+| File | What is in it |
+|---|---|
+| [`breakout-javafx/GUIDE.md`](breakout-javafx/GUIDE.md) | simple guide: play, files, how the code works |
+| [`breakout-javafx/README.md`](breakout-javafx/README.md) | JavaFX setup, controls, scoring, troubleshooting |
+| [`breakout-javafx/SCENE-BUILDER.md`](breakout-javafx/SCENE-BUILDER.md) | editing the layout, `fx:id`s, the design-time mock-up |
+| [`HOW-IT-WAS-BUILT.md`](HOW-IT-WAS-BUILT.md) | build log: decisions, installs, bugs found, line-budget trade-offs |
+| [`PLAN.md`](PLAN.md) | original project plan and milestones |
+
+## Line budget
+
+```bash
+wc -l breakout-javafx/src/main/java/com/example/breakout/*.java
+#  25 App.java
+# 275 GameController.java
+# 300 total
 ```
-index.html      page shell
-style.css       layout and visuals
-js/config.js    all tunable constants (sizes, speeds, colours, scoring)
-js/audio.js     tiny Web Audio sound synthesiser
-js/entities.js  Ball, Brick, Particle
-js/player.js    Paddle
-js/main.js      game loop, state machine, collisions, rendering
-PLAN.md         project plan and milestones
-```
 
-## How it works (short version)
-
-- **Game loop:** `requestAnimationFrame` with a delta time in seconds, clamped to
-  `1/30 s` so a stalled tab cannot teleport the ball.
-- **States:** `menu → ready → playing → level_clear → ready … → gameover`.
-  The ball sits on the paddle in `ready` until it is launched.
-- **Collision:** walls and paddle use simple reflection; the paddle bounce angle
-  depends on where the ball lands. Bricks use circle-vs-expanded-rectangle tests
-  and reflect on the axis with the smallest overlap.
-- **No tunnelling:** the ball moves in sub-steps of at most `0.8 × radius` per
-  collision check.
-- **Sound:** oscillators only, so there are no audio files to ship.
-
-## Tweaking the game
-
-Everything gameplay-related is in `js/config.js`:
-
-- `BALL.speed` / `BALL.maxSpeed` — base speed and cap
-- `PADDLE.width` / `PADDLE.speed` — difficulty
-- `BRICK.rows` / `BRICK.cols` — board size
-- `START_LIVES`, `POINTS_PER_BRICK`, `LEVEL_BONUS` — scoring
+FXML and CSS are layout/styling files and are not counted as code.
